@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { FooterMessage, HeaderMessage } from '../components/Common/WelcomeMessage';
 import { Button, Divider, Form, Message, Segment } from 'semantic-ui-react';
 
@@ -49,21 +49,21 @@ const Signup = () => {
 
 	useEffect(() => {
 		const isUser = Object.values({ name, email, password, bio }).every(item =>
-			Boolean(item)
+		  Boolean(item),
 		);
 		isUser ? setSubmitDisabled(false) : setSubmitDisabled(true);
 	}, [user]);
 
 	return (
-		<div>
-			<HeaderMessage/>
-			<Form loading={formLoading} error={errorMsg !== null} onSubmit={handleSubmit}>
-				<Message
-					error
-					header="Oops!"
-					content={errorMsg}
-					onDismiss={() => setErrorMsg(null)}
-				/>
+	  <div>
+		  <HeaderMessage/>
+		  <Form loading={formLoading} error={errorMsg !== null} onSubmit={handleSubmit}>
+			  <Message
+				error
+				header="Oops!"
+				content={errorMsg}
+				onDismiss={() => setErrorMsg(null)}
+			  />
 
 			  <Segment>
 				  <ImageDropDiv
@@ -87,76 +87,76 @@ const Signup = () => {
 					iconPosition="left"
 				  />
 
-					<Form.Input
-						required
-						label="Email"
-						placeholder="Email"
-						name="email"
-						value={email}
-						onChange={handleChange}
-						fluid
-						icon="envelope"
-						iconPosition="left"
-						type="email"
-					/>
+				  <Form.Input
+					required
+					label="Email"
+					placeholder="Email"
+					name="email"
+					value={email}
+					onChange={handleChange}
+					fluid
+					icon="envelope"
+					iconPosition="left"
+					type="email"
+				  />
 
-					<Form.Input
-						label="Password"
-						placeholder="Password"
-						name="password"
-						value={password}
-						onChange={handleChange}
-						fluid
-						icon={{
-							name: "eye",
-							circular: true,
-							link: true,
-							onClick: () => setShowPassword(!showPassword)
-						}}
-						iconPosition="left"
-						type={showPassword ? "text" : "password"}
-						required
-					/>
+				  <Form.Input
+					label="Password"
+					placeholder="Password"
+					name="password"
+					value={password}
+					onChange={handleChange}
+					fluid
+					icon={{
+						name: 'eye',
+						circular: true,
+						link: true,
+						onClick: () => setShowPassword(!showPassword),
+					}}
+					iconPosition="left"
+					type={showPassword ? 'text' : 'password'}
+					required
+				  />
 
-					<Form.Input
-						loading={usernameLoading}
-						error={!usernameAvailable}
-						required
-						label="Username"
-						placeholder="Username"
-						value={username}
-						onChange={e => {
-							setUsername(e.target.value);
-							if (regexUserName.test(e.target.value)) {
-								setUsernameAvailable(true);
-							} else {
-								setUsernameAvailable(false);
-							}
-						}}
-						fluid
-						icon={usernameAvailable ? "check" : "close"}
-						iconPosition="left"
-					/>
+				  <Form.Input
+					loading={usernameLoading}
+					error={!usernameAvailable}
+					required
+					label="Username"
+					placeholder="Username"
+					value={username}
+					onChange={e => {
+						setUsername(e.target.value);
+						if (regexUserName.test(e.target.value)) {
+							setUsernameAvailable(true);
+						} else {
+							setUsernameAvailable(false);
+						}
+					}}
+					fluid
+					icon={usernameAvailable ? 'check' : 'close'}
+					iconPosition="left"
+				  />
 
-					<CommonInputs
-						user={user}
-						showSocialLinks={showSocialLinks}
-						setShowSocialLinks={setShowSocialLinks}
-						handleChange={handleChange}
-					/>
+				  <CommonInputs
+					user={user}
+					showSocialLinks={showSocialLinks}
+					setShowSocialLinks={setShowSocialLinks}
+					handleChange={handleChange}
+				  />
 
-					<Divider hidden />
-					<Button
-						icon="signup"
-						content="Signup"
-						type="submit"
-						color="orange"
-						disabled={submitDisabled || !usernameAvailable}
-					/>
-				</Segment>
-			</Form>
-			<FooterMessage/>
-		</div>
+				  <Divider hidden/>
+				  <Button
+					icon="signup"
+					content="Signup"
+					type="submit"
+					color="orange"
+					disabled={submitDisabled || !usernameAvailable}
+				  />
+			  </Segment>
+		  </Form>
+		  <FooterMessage/>
+	  </div>
 	);
 };
 
