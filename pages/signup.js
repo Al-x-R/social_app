@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { FooterMessage, HeaderMessage } from '../components/Common/WelcomeMessage';
 import { Button, Divider, Form, Message, Segment } from 'semantic-ui-react';
 
+import CommonInputs from '../components/Common/CommonInputs'
+
 const regexUserName = /^(?!.*\.\.)(?!.*\.$)[^\W][\w.]{0,29}$/;
 
 const Signup = () => {
@@ -120,6 +122,13 @@ const Signup = () => {
 						fluid
 						icon={usernameAvailable ? "check" : "close"}
 						iconPosition="left"
+					/>
+
+					<CommonInputs
+						user={user}
+						showSocialLinks={showSocialLinks}
+						setShowSocialLinks={setShowSocialLinks}
+						handleChange={handleChange}
 					/>
 
 					<Divider hidden />
