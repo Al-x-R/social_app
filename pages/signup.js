@@ -1,9 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { FooterMessage, HeaderMessage } from '../components/Common/WelcomeMessage';
 import { Button, Divider, Form, Message, Segment } from 'semantic-ui-react';
+import axios from 'axios';
 
 import CommonInputs from '../components/Common/CommonInputs';
 import ImageDropDiv from '../components/Common/ImageDropDiv';
+import baseUrl from '../utils/baseUrl'
 
 const regexUserName = /^(?!.*\.\.)(?!.*\.$)[^\W][\w.]{0,29}$/;
 
@@ -58,6 +60,30 @@ const Signup = () => {
 		);
 		isUser ? setSubmitDisabled(false) : setSubmitDisabled(true);
 	}, [user]);
+
+	const checkUsername = async () => {
+		setUsernameLoading(true);
+
+		try {
+			const res = await axios.get(`${baseUrl}/api/signup/${username}`);
+
+			if (errorMsg !== null) setErrorMsg(null);
+
+			if (res.data === 'Available') {
+				setUsernameAvailable(true);
+				setUser(prev => ({ ...prev, username }));
+			}
+		} catch (error) {
+			setErrorMsg('Username Not Available');
+			setUsernameAvailable(false);
+		}
+
+		setUsernameLoading(false);
+	};
+
+	useEffect(() => {
+		username === '' ? setUsernameAvailable(false) : checkUsername();
+	}, [username]);
 
 	return (
 	  <div>
