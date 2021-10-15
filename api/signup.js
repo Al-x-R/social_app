@@ -52,6 +52,7 @@ router.post('/', async (req, res) => {
 	try {
 		let user;
 		user = await UserModel.findOne({ email: email.toLowerCase() });
+
 		if (user) {
 			return res.status(401).send('User already registered');
 		}

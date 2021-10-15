@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import cookie from 'js-cookie';
 import { Form, Button, Message, Segment, Divider } from 'semantic-ui-react';
 
 import { HeaderMessage, FooterMessage } from '../components/Common/WelcomeMessage';
+import { loginUser } from '../utils/authUser';
 
 const Login = () => {
 	const [user, setUser] = useState({
@@ -15,7 +17,7 @@ const Login = () => {
 	const [formLoading, setFormLoading] = useState(false);
 	const [submitDisabled, setSubmitDisabled] = useState(true);
 
-	const handleChange = e => {
+	const handleChange = (e) => {
 		const { name, value } = e.target;
 
 		setUser(prev => ({ ...prev, [name]: value }));
@@ -26,11 +28,17 @@ const Login = () => {
 		isUser ? setSubmitDisabled(false) : setSubmitDisabled(true);
 	}, [user]);
 
-	const handleSubmit = async e => {
+	const handleSubmit = async (e) => {
 		e.preventDefault();
 
 		await loginUser(user, setErrorMsg, setFormLoading);
 	};
+
+	useEffect(() => {
+		document.title = 'Welcome Back';
+		const userEmail = cookie.get('userEmail');
+		if (userEmail) setUser(prev => ({ ...prev, email: userEmail }));
+	}, []);
 
 	return (
 	  <>

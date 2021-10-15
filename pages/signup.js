@@ -1,13 +1,16 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { FooterMessage, HeaderMessage } from '../components/Common/WelcomeMessage';
 import { Button, Divider, Form, Message, Segment } from 'semantic-ui-react';
 import axios from 'axios';
 
+import { FooterMessage, HeaderMessage } from '../components/Common/WelcomeMessage';
 import CommonInputs from '../components/Common/CommonInputs';
 import ImageDropDiv from '../components/Common/ImageDropDiv';
-import baseUrl from '../utils/baseUrl'
+import baseUrl from '../utils/baseUrl';
+import { registerUser } from '../utils/authUser';
 
 const regexUserName = /^(?!.*\.\.)(?!.*\.$)[^\W][\w.]{0,29}$/;
+
+let cancel;
 
 const Signup = () => {
 	const [user, setUser] = useState({
@@ -49,11 +52,6 @@ const Signup = () => {
 		setUser(prev => ({ ...prev, [name]: value }));
 	};
 
-	const handleSubmit = async e => {
-		e.preventDefault();
-		setFormLoading(true);
-	};
-
 	useEffect(() => {
 		const isUser = Object.values({ name, email, password, bio }).every(item =>
 		  Boolean(item),
@@ -65,7 +63,15 @@ const Signup = () => {
 		setUsernameLoading(true);
 
 		try {
-			const res = await axios.get(`${baseUrl}/api/signup/${username}`);
+			cancel && cancel();
+
+			const CancelToken = axios.CancelToken;
+
+			const res = await axios.get(`${baseUrl}/api/signup/${username}`, {
+				cancelToken: new CancelToken(canceler => {
+					cancel = canceler;
+				}),
+			});
 
 			if (errorMsg !== null) setErrorMsg(null);
 
@@ -84,6 +90,23 @@ const Signup = () => {
 	useEffect(() => {
 		username === '' ? setUsernameAvailable(false) : checkUsername();
 	}, [username]);
+
+	const handleSubmit = async e => {
+		e.preventDefault();
+		setFormLoading(true);
+
+		let profilePicUrl;
+		if (media !== null) {
+			profilePicUrl = await uploadPic(media);
+		}
+
+		if (media !== null && !profilePicUrl) {
+			setFormLoading(false);
+			return setErrorMsg('Error Uploading Image');
+		}
+
+		await registerUser(user, profilePicUrl, setErrorMsg, setFormLoading);
+	};
 
 	return (
 	  <div>
